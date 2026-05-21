@@ -129,6 +129,7 @@ async function run() {
                 res.send(result);
             }
         );
+
         app.delete(
             '/addedtutors/:id',
             verifyToken,
@@ -185,7 +186,7 @@ async function run() {
                 });
             res.send(filtered);
         });
-        
+
         app.get('/featured', async (req, res) => {
             const result =
                 await tutorsCollection
@@ -209,6 +210,7 @@ async function run() {
                 res.send(result);
             }
         );
+
         app.post(
             '/booking',
             verifyToken,
@@ -233,6 +235,7 @@ async function run() {
                 res.json(result);
             }
         );
+
         app.get(
             '/booking/:userId',
             verifyToken,
@@ -248,6 +251,7 @@ async function run() {
                 res.send(result);
             }
         );
+
         app.patch(
             "/booking/:id",
             verifyToken,
@@ -270,6 +274,7 @@ async function run() {
                 res.send(result);
             }
         );
+
         app.patch(
             "/tutors/slot/:id",
             verifyToken,
@@ -306,6 +311,8 @@ async function run() {
                 res.send(result);
             }
         );
+
+        
         console.log(
             "Pinged your deployment. You successfully connected to MongoDB!"
         );
