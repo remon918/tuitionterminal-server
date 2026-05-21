@@ -27,30 +27,30 @@ const JWKS = createRemoteJWKSet(
     new URL(`${process.env.CLIENT_URL}/api/auth/jwks`)
 )
 const verifyToken = async (req, res, next) => {
-  const authHeader = req.headers.authorization;
+    const authHeader = req.headers.authorization;
 
-  if (!authHeader) {
-    return res.status(401).json({ message: "Unauthorized" });
-  }
+    if (!authHeader) {
+        return res.status(401).json({ message: "Unauthorized" });
+    }
 
-  const token = authHeader.split(" ")[1];
+    const token = authHeader.split(" ")[1];
 
-  if (!token) {
-    return res.status(401).json({ message: "Unauthorized" });
-  }
+    if (!token) {
+        return res.status(401).json({ message: "Unauthorized" });
+    }
 
-  try {
-    const { payload } = await jwtVerify(token, JWKS);
+    try {
+        const { payload } = await jwtVerify(token, JWKS);
 
-    req.user = payload; // important
+        req.user = payload; // important
 
-    next();
-  } catch (error) {
-    return res.status(403).json({ message: "Forbidden" });
-  }
+        next();
+    } catch (error) {
+        return res.status(403).json({ message: "Forbidden" });
+    }
 };
 
-        
+
 
 async function run() {
     try {
@@ -62,13 +62,13 @@ async function run() {
 
 
 
-        app.get("/addedtutors" ,verifyToken , async(req, res)=>{
+        app.get("/addedtutors", verifyToken, async (req, res) => {
             const result = await addedTutorsCollection.find().toArray()
             res.send(result);
         })
 
 
-        app.post('/addedtutors',verifyToken, async (req, res) => {
+        app.post('/addedtutors', verifyToken, async (req, res) => {
             const addedTutorsData = req.body
             console.log(addedTutorsData)
             const result = await addedTutorsCollection.insertOne(addedTutorsData)
@@ -93,16 +93,16 @@ async function run() {
 
         app.get('/tutors/:tutorsId', verifyToken, async (req, res) => {
 
-    console.log(req.user)
+            console.log(req.user)
 
-    const { tutorsId } = req.params;
+            const { tutorsId } = req.params;
 
-    const query = { _id: new ObjectId(tutorsId) };
+            const query = { _id: new ObjectId(tutorsId) };
 
-    const result = await tutorsCollection.findOne(query);
+            const result = await tutorsCollection.findOne(query);
 
-    res.send(result);
-})
+            res.send(result);
+        })
 
 
         app.post('/booking', verifyToken, async (req, res) => {
@@ -111,49 +111,49 @@ async function run() {
             res.json(result);
         })
 
-        app.get('/booking/:userId', verifyToken , async (req, res) => {
+        app.get('/booking/:userId', verifyToken, async (req, res) => {
             const { userId } = req.params;
             const result = await bookingCollection.find({ userId: userId }).toArray();
             res.send(result);
         })
 
         app.patch("/booking/:id", verifyToken, async (req, res) => {
-  const { id } = req.params;
+            const { id } = req.params;
 
-  const result = await bookingCollection.updateOne(
-    { _id: new ObjectId(id) },
-    {
-      $set: {
-        status: "Cancelled",
-      },
-    }
-  );
+            const result = await bookingCollection.updateOne(
+                { _id: new ObjectId(id) },
+                {
+                    $set: {
+                        status: "Cancelled",
+                    },
+                }
+            );
 
-  res.send(result);
-});
+            res.send(result);
+        });
 
 
-        app.patch('/addedtutors/:id', verifyToken , async(req, res) =>{
-            const {id} = req.params
+        app.patch('/addedtutors/:id', verifyToken, async (req, res) => {
+            const { id } = req.params
             const updatedData = req.body
-            
+
             const result = await addedTutorsCollection.updateOne(
-                {_id: new ObjectId(id)},
-                {$set: updatedData}
+                { _id: new ObjectId(id) },
+                { $set: updatedData }
             )
             res.send(result)
         })
 
-        app.delete('/addedtutors/:id' , verifyToken, async (req, res) => {
+        app.delete('/addedtutors/:id', verifyToken, async (req, res) => {
 
-          const { id } = req.params;
+            const { id } = req.params;
 
-          const result = await addedTutorsCollection.deleteOne({
-          _id: new ObjectId(id)
-           });
+            const result = await addedTutorsCollection.deleteOne({
+                _id: new ObjectId(id)
+            });
 
-          res.send(result);
-});
+            res.send(result);
+        });
 
 
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
@@ -168,7 +168,6 @@ run().catch(console.dir);
 app.get('/', (req, res) => {
     res.send('Hello World!')
 })
-
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
